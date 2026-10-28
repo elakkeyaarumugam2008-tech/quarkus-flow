@@ -1,4 +1,84 @@
-= Workflow execution via REST API with Quarkus Flow Runner
+=== Managing workflow instances
+
+The Runner provides endpoints to suspend, resume, or cancel an active workflow instance. Each operation supports both the latest workflow version and a specific version.
+
+All endpoints use the `POST` method and require the `flow-admin` or `flow-invoker` role.
+
+==== Suspend a workflow instance
+
+Suspending a workflow prevents the next task from starting after the current task completes.
+
+**Latest version:**
+
+[source,bash]
+----
+curl -X POST \
+  -H "Authorization: Bearer ${API_KEY}" \
+  http://localhost:8080/q/flow/exec/examples/order-processing/550e8400-e29b-41d4-a716-446655440000/suspend
+----
+
+**Specific version:**
+
+[source,bash]
+----
+curl -X POST \
+  -H "Authorization: Bearer ${API_KEY}" \
+  http://localhost:8080/q/flow/exec/examples/order-processing/2.1.0/550e8400-e29b-41d4-a716-446655440000/suspend
+----
+
+==== Resume a workflow instance
+
+Resuming a suspended workflow allows it to continue with the next task.
+
+**Latest version:**
+
+[source,bash]
+----
+curl -X POST \
+  -H "Authorization: Bearer ${API_KEY}" \
+  http://localhost:8080/q/flow/exec/examples/order-processing/550e8400-e29b-41d4-a716-446655440000/resume
+----
+
+**Specific version:**
+
+[source,bash]
+----
+curl -X POST \
+  -H "Authorization: Bearer ${API_KEY}" \
+  http://localhost:8080/q/flow/exec/examples/order-processing/2.1.0/550e8400-e29b-41d4-a716-446655440000/resume
+----
+
+==== Cancel a workflow instance
+
+Cancelling a workflow prevents it from continuing to the next task after the current task finishes. Cancellation may be attempted on the current task.
+
+**Latest version:**
+
+[source,bash]
+----
+curl -X POST \
+  -H "Authorization: Bearer ${API_KEY}" \
+  http://localhost:8080/q/flow/exec/examples/order-processing/550e8400-e29b-41d4-a716-446655440000/cancel
+----
+
+**Specific version:**
+
+[source,bash]
+----
+curl -X POST \
+  -H "Authorization: Bearer ${API_KEY}" \
+  http://localhost:8080/q/flow/exec/examples/order-processing/2.1.0/550e8400-e29b-41d4-a716-446655440000/cancel
+----
+
+==== Responses
+
+These operations return the following responses:
+
+* **200 OK** - The operation succeeded.
+* **304 Not Modified** - The workflow instance is not in a state that allows the requested operation. The response body contains the instance status.
+* **404 Not Found** - The workflow instance or workflow version was not found.
+
+Replace the example namespace, workflow name, version, and instance ID with values from your deployment.= Workflow execution via REST API with Quarkus Flow Runner
 :page-role: tutorial
 include::includes/attributes.adoc[]
 
